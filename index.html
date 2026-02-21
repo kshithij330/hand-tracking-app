@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hand Tracker AR</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <video id="webcam-video" autoplay playsinline></video>
+
+  <!-- Webcam + 2D overlays -->
+  <canvas id="main-canvas"></canvas>
+
+  <!-- Three.js overlay (transparent, hidden in 2D mode) -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- UI Overlay -->
+  <div id="ui-overlay">
+    <div id="title-bar">
+      <span class="title-label">✋ Hand Tracker AR</span>
+      <span id="status-dot" class="dot-inactive"></span>
+    </div>
+
+    <div id="legend">
+      <div class="legend-item">
+        <span class="legend-dot right"></span>
+        <span id="right-hint">Right Hand — Size &amp; Rotation</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-dot left"></span>
+        <span>Left Hand — Color &amp; Saturation</span>
+      </div>
+      <div class="legend-sep"></div>
+      <div class="legend-item">
+        <span class="legend-icon">🤏</span>
+        <span>Pinch — Drag shape</span>
+      </div>
+      <div class="legend-item">
+        <span class="legend-icon">👆</span>
+        <span>Quick tap — Cycle shape</span>
+      </div>
+    </div>
+
+    <div id="shape-badge">⬛ Square</div>
+
+    <!-- 2D / 3D Mode Toggle -->
+    <div id="mode-toggle">
+      <button class="mode-btn active" data-mode="2D">2D</button>
+      <button class="mode-btn" data-mode="3D">3D ✦</button>
+    </div>
+  </div>
+
+  <!-- No-hand overlay -->
+  <div id="no-hand-overlay" class="hidden">
+    <div class="no-hand-content">
+      <div class="no-hand-icon">🖐️</div>
+      <p>No Hand Detected</p>
+      <p class="sub">Show your hands in front of the camera</p>
+    </div>
+  </div>
+
+  <!-- MediaPipe CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+  <!-- Three.js -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+
+  <script src="app.js"></script>
+</body>
+</html>
