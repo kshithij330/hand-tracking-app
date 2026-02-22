@@ -307,3 +307,47 @@ html, body {
   text-align: center;
   flex-shrink: 0;
 }
+
+/* ── Branded Footer ──────────────────────────────────────────────── */
+#branding-footer {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  border-radius: 12px;
+  padding: 8px 16px;
+  width: fit-content;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  pointer-events: auto;
+  align-self: flex-start; /* Place it at the bottom left area of the overlay */
+}
+
+.footer-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.footer-logo {
+  height: 24px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.2));
+}
+
+.footer-text {
+  font-size: 11px;
+  color: var(--text-secondary);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+.footer-text strong {
+  color: var(--accent);
+  font-weight: 700;
+}
