@@ -28,7 +28,7 @@ const shapePos    = { x: 0, y: 0 };
 
 // ── Three.js state ────────────────────────────────────────────────────
 let threeRenderer = null, threeScene = null, threeCamera = null, threeMesh = null;
-const TARGET3D      = { rotX: 0, rotY: 0 };
+const TARGET3D      = { rotX: 0, rotY: 0, scale: 1 };
 let   idleSpin      = 0;
 const prevWrist     = { x: null, y: null }; // for delta-based 3D rotation
 
@@ -167,6 +167,14 @@ function renderThree() {
   if (!threeRenderer || !threeMesh) return;
   threeMesh.rotation.x = lerp(threeMesh.rotation.x, TARGET3D.rotX, 0.1);
   threeMesh.rotation.y = lerp(threeMesh.rotation.y, TARGET3D.rotY, 0.1);
+  threeMesh.scale.setScalar(lerp(threeMesh.scale.x, TARGET3D.scale, 0.1));
+
+  // Map shapePos (pixels) to 3D world space
+  const tx = mapRange(shapePos.x, 0, canvas.width, -4, 4);
+  const ty = mapRange(shapePos.y, 0, canvas.height, 3, -3);
+  threeMesh.position.x = lerp(threeMesh.position.x, tx, 0.1);
+  threeMesh.position.y = lerp(threeMesh.position.y, ty, 0.1);
+
   threeMesh.material.color.setHSL(shapeConfig.hue/360, shapeConfig.saturation/100, 0.5);
   threeMesh.material.emissive.setHSL(shapeConfig.hue/360, shapeConfig.saturation/100, 0.12);
   threeRenderer.render(threeScene, threeCamera);
@@ -268,19 +276,22 @@ function onResults(results) {
   }
 
   // ── Drag (2D only) ────────────────────────────────────────────────
+  // Handle dragging (single-hand pinch)
   const lc=pinch.Left.closed&&frameHands.Left, rc=pinch.Right.closed&&frameHands.Right;
   const any=lc||rc;
 
-  if (appMode==='2D' && any) {
+  if (any) {
     let cx,cy;
     // Single-hand drag only
     if (lc) { cx=pinch.Left.fingerMid.x;  cy=pinch.Left.fingerMid.y; }
     else    { cx=pinch.Right.fingerMid.x; cy=pinch.Right.fingerMid.y; }
 
     if (!drag.active) { drag.active=true; drag.startMid={x:cx,y:cy}; drag.startShapePos={x:shapePos.x,y:shapePos.y}; }
-    shapePos.x = clamp(drag.startShapePos.x+(cx-drag.startMid.x), shapeConfig.size/2, W-shapeConfig.size/2);
-    shapePos.y = clamp(drag.startShapePos.y+(cy-drag.startMid.y), shapeConfig.size/2, H-shapeConfig.size/2);
-  } else { drag.active=false; }
+    shapePos.x = clamp(drag.startShapePos.x+(cx-drag.startMid.x), 0, W);
+    shapePos.y = clamp(drag.startShapePos.y+(cy-drag.startMid.y), 0, H);
+  } else {
+    drag.active = false;
+  }
 
   // ── Shape cycle on quick tap ──────────────────────────────────────
   for (const hand of ['Left','Right']) {
@@ -336,6 +347,9 @@ function onResults(results) {
             TARGET3D.rotX  = clamp(TARGET3D.rotX + dy * 5.0, -Math.PI*0.5, Math.PI*0.5);
           }
           prevWrist.x = wx; prevWrist.y = wy;
+
+          // Thumb–index distance → mesh scale (re-added for 3D)
+          TARGET3D.scale = mapRange(d, 30, 300, 0.4, 2.5);
         } else {
           TARGET.hue=angle; TARGET.sat=mapRange(d,30,300,20,100);
         }
