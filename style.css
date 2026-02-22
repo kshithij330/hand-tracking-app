@@ -324,6 +324,18 @@ html, body {
   align-self: flex-start;
 }
 
+#branding-link {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  padding: 12px 24px;
+  width: fit-content;
+  pointer-events: auto;
+  align-self: flex-start;
+}
+
 .footer-content {
   display: flex;
   align-items: center;
